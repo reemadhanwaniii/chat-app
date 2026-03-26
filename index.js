@@ -12,19 +12,10 @@ app.use('/',express.static(__dirname+'/public'));
    -> Each client gets a unique socket object
  */
 io.on('connection',(socket) => {
-    console.log("A user connected",socket.id);
-
-    // Listens for a custom event from Client
-    socket.on('from_client',() => {
-        console.log("Event coming from client");
-    })
-
-    // Every 2 seconds → sends event to that specific client
-   //  This is server push (real-time)
-    setInterval(()=>{
-        socket.emit("from_server");
-    },2000);
-
+   socket.on('msg_send',(data)=>{
+     console.log(data);
+     socket.broadcast.emit("msg_rcvd",data);
+   });
 });
 
 

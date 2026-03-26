@@ -4,21 +4,37 @@ const http = require('http');
 const server = http.createServer(app);
 const socketio = require('socket.io');
 const io = socketio(server);
+const connect = require('./config/database-config');
 
-app.use('/',express.static(__dirname+'/public'));
+
 
 /**
  * -> Triggered when a client connects via Socket.IO
    -> Each client gets a unique socket object
  */
 io.on('connection',(socket) => {
-   socket.on('msg_send',(data)=>{
-     console.log(data);
-     socket.broadcast.emit("msg_rcvd",data);
+   socket.on('join_room',(data)=>{
+     console.log("joining a room",data.roomId);
+     socket.join(data.roomId);
    });
+
+   socket.on('msg_send',async (data)=>{
+    io.to(data.roomId).emit('msg_rcvd',data);
+   })
 });
 
+app.set('view engine','ejs');
 
-server.listen(3000,()=>{
+app.get('/chat/:roomId',(req,res)=>{
+    res.render('index',{
+        name: 'Reema',
+        id: req.params.roomId
+    });
+});
+
+app.use('/',express.static(__dirname+'/public'));
+
+server.listen(3000,async()=>{
+    await connect();
     console.log('Server is running on port 3000');
 });

@@ -54,7 +54,7 @@
         });
 
         socket.on('someone_typing',(data)=>{
-            spantyping.style.direction = 'block';
+            spantyping.style.display = 'block';
             clearTimeout(receiveTypingId);
             receiveTypingId = setTimeout(() => {
                 spantyping.style.display = 'none';

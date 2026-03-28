@@ -14,21 +14,21 @@ const connect = require('./config/database-config');
  */
 io.on('connection',(socket) => {
    socket.on('join_room',(data)=>{
-     console.log("joining a room",data.roomId);
-     socket.join(data.roomId);
+     console.log("joining a room",data.roomid);
+     socket.join(data.roomid);
    });
 
    socket.on('msg_send',async (data)=>{
-    io.to(data.roomId).emit('msg_rcvd',data);
+    io.to(data.roomid).emit('msg_rcvd',data);
    })
 });
 
 app.set('view engine','ejs');
 
-app.get('/chat/:roomId',(req,res)=>{
+app.get('/chat/:roomid',(req,res)=>{
     res.render('index',{
         name: 'Reema',
-        id: req.params.roomId
+        id: req.params.roomid
     });
 });
 
